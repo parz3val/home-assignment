@@ -1,7 +1,7 @@
 """ Simple Query Builder to build queries for commands
 """
 from models import MentionCommand, MentionType, Person, PostType, PostsCommand
-from typing import List, Dict, Literal, Union
+from typing import Any, Callable, List, Dict, Literal, Union, Optional
 
 
 class QueryBuilder:
@@ -31,13 +31,15 @@ class QueryBuilder:
             None,
         )
     def get_mention_idx(cls, command_):
+        # if mention is in the list return the index
         if cls.document.posts[cls.index].get('mentions') and cls.get_mention(cls.document, command_):
             return cls.document.posts[cls.index].get('mentions').index(cls.get_mention(cls.document, command_))
     
     def post_query(cls, type:PostType, command_: PostsCommand):
         if command_._delete:
-            # find the index of command._id in document.posts
             return {"$remove": {f"posts.{cls.index}": True}}
+        # can't just do if cls.index because 0 is falsey
+        # stumped me for few minutes
         elif cls.index==0 or cls.index:
             return {"$update": {f"posts.{cls.index}.value": command_.value}}
         else:
@@ -64,10 +66,13 @@ class QueryBuilder:
 
 def parse_query(command: PostsCommand, document: Person) -> Dict:
     orm_conn = QueryBuilder(command, document)
+    # if there is no id, means there is no post, so its not mention command
     if orm_conn.post._id is None or orm_conn.post._delete:
         return orm_conn.post_query(type=PostType(), command_=orm_conn.post)
+    # if mention exists, its a mention command
     elif orm_conn.mentions not in [[], None]:
         return orm_conn.mention_query(type=MentionType(), command_=orm_conn.mentions[0])
+    # else:: if mention does not exist, but id exists its a post command
     else:
         return orm_conn.post_query(type=PostType(), command_=orm_conn.post)
 
@@ -75,7 +80,7 @@ def parse_query(command: PostsCommand, document: Person) -> Dict:
 
 def parse_queries_(
     commands_: List[PostsCommand], document: Person
-) -> Dict:
+) -> Dict[Any, Any]:
     """
     Map posts command into into statement
     """

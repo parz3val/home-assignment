@@ -8,7 +8,7 @@
 
 ## Improvements
 
-1. Due to amount of time and limited knowledge about requirements, I implemented a generic generator for to complete the requirements. But, having more info about requirements and coding guidelines would improve the code qualit further.
+1. Due to amount of time and limited knowledge about requirements, I implemented a generic generator for to complete the requirements. But, having more info about requirements and coding guidelines would improve the code quality further.
 
 2. I've captured requirements into simple unit tests. They are enough for now, but doing something like hypothesis testing would provide better confidence over the solution.
 

@@ -8,8 +8,6 @@ def test_update_post():
     # OUTPUT: Update value field of post at index 0
     output = { "$update": {"posts.0.value": "too"} }
     result = generateUpdateStatement(mutation=input) 
-    import pdb
-    pdb.set_trace()
     assert result == output
 
 def test_update_mention_with_id():

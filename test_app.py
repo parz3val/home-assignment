@@ -1,5 +1,5 @@
 """ Tests and Fixtures"""
-from app import generateUpdateStatement
+from simple_coro import generateUpdateStatement
 
 
 def test_update_post():
